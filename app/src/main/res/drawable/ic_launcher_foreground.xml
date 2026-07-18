@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- musical note, centered within adaptive icon safe zone -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M62,34 L62,64.5 C60.2,63.6 58.2,63 56,63 C50.5,63 46,66.6 46,71 C46,75.4 50.5,79 56,79 C61.5,79 66,75.4 66,71 L66,44 L74,46.5 L74,38.5 L62,34 Z" />
+</vector>

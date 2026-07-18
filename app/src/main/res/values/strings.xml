@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">YT Audio</string>
+    <string name="hint_url">Incolla il link di YouTube</string>
+    <string name="download">Scarica audio</string>
+    <string name="cancel">Annulla</string>
+    <string name="init_msg">Inizializzazione del motore di download…</string>
+    <string name="disclaimer">Scarica solo contenuti di cui possiedi i diritti o consentiti dalla licenza. Rispetta i Termini di Servizio di YouTube e le leggi sul copyright.</string>
+</resources>
