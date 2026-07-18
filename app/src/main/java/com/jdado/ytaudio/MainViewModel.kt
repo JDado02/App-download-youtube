@@ -23,7 +23,18 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow<DownloadState>(DownloadState.Idle)
     val state = _state.asStateFlow()
 
+    private val _engineNote = MutableStateFlow<String?>(null)
+    val engineNote = _engineNote.asStateFlow()
+
     private var job: Job? = null
+
+    fun updateEngine() {
+        if (YtAudioApp.updating) return
+        viewModelScope.launch {
+            _engineNote.value = "Aggiornamento di yt-dlp in corso…"
+            _engineNote.value = YtAudioApp.updateEngine(getApplication())
+        }
+    }
 
     fun onUrlChange(value: String) {
         _url.value = value

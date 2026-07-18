@@ -47,6 +47,10 @@ object AudioDownloader {
                 addOption("--embed-thumbnail")        // cover art when available
                 addOption("--add-metadata")           // title/artist tags
                 addOption("--no-mtime")
+                // Use player clients that don't require a signed-in session / PO token.
+                // Works around YouTube's "Please sign in" / HTTP 400 responses to the
+                // default web client. yt-dlp tries them in order and falls back.
+                addOption("--extractor-args", "youtube:player_client=tv,web_safari,android_vr")
                 addOption("-o", File(tmpDir, "%(title)s.%(ext)s").absolutePath)
             }
 

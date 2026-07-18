@@ -81,6 +81,7 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(vm: MainViewModel) {
     val url by vm.url.collectAsState()
     val state by vm.state.collectAsState()
+    val engineNote by vm.engineNote.collectAsState()
     val working = state is DownloadState.Working
 
     Scaffold(
@@ -120,6 +121,23 @@ fun MainScreen(vm: MainViewModel) {
                 Button(onClick = vm::start, modifier = Modifier.fillMaxWidth()) {
                     Text("Scarica audio (MP3 max qualità)")
                 }
+            }
+
+            Spacer(Modifier.height(8.dp))
+            OutlinedButton(
+                onClick = vm::updateEngine,
+                enabled = !working,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Aggiorna motore (yt-dlp)")
+            }
+            engineNote?.let {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
 
             Spacer(Modifier.height(24.dp))
@@ -179,6 +197,18 @@ private fun StatusCard(state: DownloadState) {
                 Text("⚠️ Errore", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(4.dp))
                 Text(state.message, style = MaterialTheme.typography.bodyMedium)
+                if (state.message.contains("sign in", ignoreCase = true) ||
+                    state.message.contains("400") ||
+                    state.message.contains("Precondition", ignoreCase = true)
+                ) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Suggerimento: YouTube ha bloccato la versione attuale di yt-dlp. " +
+                            "Premi \"Aggiorna motore (yt-dlp)\" e riprova.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }
