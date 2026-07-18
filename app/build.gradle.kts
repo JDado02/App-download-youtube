@@ -66,6 +66,9 @@ dependencies {
     implementation("io.github.junkfood02.youtubedl-android:library:0.17.4")
     implementation("io.github.junkfood02.youtubedl-android:ffmpeg:0.17.4")
 
+    // Async image loading for thumbnails
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 }

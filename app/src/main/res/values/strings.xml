@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YT Audio</string>
+    <string name="app_name">YT Davide</string>
     <string name="hint_url">Incolla il link di YouTube</string>
     <string name="download">Scarica audio</string>
     <string name="cancel">Annulla</string>

@@ -19,6 +19,14 @@ object AudioDownloader {
 
     data class Result(val title: String, val savedAs: String)
 
+    @Volatile
+    private var currentProcessId: String? = null
+
+    /** Aborts the running yt-dlp process, if any. */
+    fun cancel() {
+        currentProcessId?.let { runCatching { YoutubeDL.getInstance().destroyProcessById(it) } }
+    }
+
     /**
      * @param onProgress invoked with a 0..100 percentage and the raw yt-dlp log line.
      */
@@ -28,6 +36,8 @@ object AudioDownloader {
         onProgress: (percent: Float, line: String) -> Unit,
     ): Result = withContext(Dispatchers.IO) {
         require(url.isNotBlank()) { "URL vuoto" }
+        val processId = "dl-${System.currentTimeMillis()}"
+        currentProcessId = processId
 
         // Fetch metadata for a clean filename (best effort).
         val title = runCatching { YoutubeDL.getInstance().getInfo(url).title }
@@ -51,12 +61,16 @@ object AudioDownloader {
                 // Works around YouTube's "Please sign in" / HTTP 400 responses to the
                 // default web client. yt-dlp tries them in order and falls back.
                 addOption("--extractor-args", "youtube:player_client=tv,web_safari,android_vr")
+                // Authenticated session for age-restricted / sign-in-required videos.
+                if (CookieStore.isLoggedIn(context)) {
+                    addOption("--cookies", CookieStore.file(context).absolutePath)
+                }
                 addOption("-o", File(tmpDir, "%(title)s.%(ext)s").absolutePath)
             }
 
-            YoutubeDL.getInstance().execute(request) { progress, _, line ->
+            YoutubeDL.getInstance().execute(request, processId = processId, callback = { progress, _, line ->
                 onProgress(progress.coerceIn(0f, 100f), line)
-            }
+            })
 
             val produced = tmpDir.listFiles()?.firstOrNull { it.extension.equals("mp3", true) }
                 ?: tmpDir.listFiles()?.maxByOrNull { it.length() }
@@ -66,6 +80,7 @@ object AudioDownloader {
             val savedAs = exportToMusicLibrary(context, produced, displayName)
             Result(title = title, savedAs = savedAs)
         } finally {
+            currentProcessId = null
             tmpDir.deleteRecursively()
         }
     }
