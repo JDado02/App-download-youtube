@@ -42,7 +42,8 @@ object YtSearch {
         val out = ArrayList<SearchItem>(entries.length())
         for (i in 0 until entries.length()) {
             val e = entries.optJSONObject(i) ?: continue
-            val id = e.optString("id").ifBlank { continue }
+            val id = e.optString("id")
+            if (id.isBlank()) continue
             val title = e.optString("title").ifBlank { "(senza titolo)" }
             val uploader = e.optString("uploader")
                 .ifBlank { e.optString("channel") }
